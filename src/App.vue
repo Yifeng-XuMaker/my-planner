@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import TodoItem from './components/TodoItem.vue'
+import { db } from './firebase'
+import { collection, addDoc } from "firebase/firestore"
 
 // ======================
 //  狀態管理
@@ -139,13 +141,37 @@ function addWeekTodo() {
   newWeekTodo.value = ''; saveWeekly()
 }
 
-function addTodo() {
+
+async function addTodo() {
   if (!newTodo.value.trim() || !ensure()) return
-  if (!data.value[currentMonth.value][currentDay.value]) data.value[currentMonth.value][currentDay.value] = []
-  data.value[currentMonth.value][currentDay.value].push({ 
-    text: newTodo.value, time: newTodoTime.value, done: false, notified: false 
-  })
-  newTodo.value = ''; newTodoTime.value = ''; save()
+
+  const todo = {
+    text: newTodo.value,
+    time: newTodoTime.value,
+    done: false,
+    notified: false,
+    day: currentDay.value,
+    month: currentMonth.value,
+    createdAt: Date.now() // 🔥建議加（之後排序用）
+  }
+
+  // 👉 本地資料（保留你原本邏輯）
+  if (!data.value[currentMonth.value][currentDay.value]) {
+    data.value[currentMonth.value][currentDay.value] = []
+  }
+
+  data.value[currentMonth.value][currentDay.value].push(todo)
+
+  // 👉 Firebase 同步（🔥新增）
+  try {
+    await addDoc(collection(db, "todos"), todo)
+  } catch (e) {
+    console.error("Firebase error:", e)
+  }
+
+  newTodo.value = ''
+  newTodoTime.value = ''
+  save()
 }
 
 function addMonthTodo() {
