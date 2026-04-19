@@ -3,7 +3,7 @@
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
-// 🔥 把這裡換成你的 Firebase config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDtyyeAxq-TSBQpsdVY7hbJNrxs5FZxMH0",
   authDomain: "planner-app-bb94f.firebaseapp.com",
@@ -16,5 +16,5 @@ const firebaseConfig = {
 // 初始化 Firebase
 const app = initializeApp(firebaseConfig)
 
-// 🔥 Firestore（資料庫）
+//  Firestore（資料庫）
 export const db = getFirestore(app)
