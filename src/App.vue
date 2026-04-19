@@ -152,17 +152,17 @@ async function addTodo() {
     notified: false,
     day: currentDay.value,
     month: currentMonth.value,
-    createdAt: Date.now() // 🔥建議加（之後排序用）
+    createdAt: Date.now() // 建議加（之後排序用）
   }
 
-  // 👉 本地資料（保留你原本邏輯）
+  //  本地資料
   if (!data.value[currentMonth.value][currentDay.value]) {
     data.value[currentMonth.value][currentDay.value] = []
   }
 
   data.value[currentMonth.value][currentDay.value].push(todo)
 
-  // 👉 Firebase 同步（🔥新增）
+  //  Firebase 同步（新增）
   try {
     await addDoc(collection(db, "todos"), todo)
   } catch (e) {
